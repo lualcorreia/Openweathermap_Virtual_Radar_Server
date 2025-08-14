@@ -1,0 +1,48 @@
+<script type="text/javascript">
+  const WEATHER_CONFIG = {
+    apiKey: 'API KEY',
+    layers: {
+      'Temperatura': 'temp_new',
+      'Nuvens': 'clouds_new',
+      'Precipitação': 'precipitation_new'
+    },
+    tileBaseUrl: 'https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={apiKey}'
+  };
+
+  if (VRS && VRS.globalDispatch) {
+    VRS.globalDispatch.hook(VRS.globalEvent.bootstrapCreated, function (bootStrap) {
+      if (bootStrap.hookMapInitialised) {
+        bootStrap.hookMapInitialised(function (pageSettings) {
+          if (pageSettings.mapPlugin) {
+            const map = pageSettings.mapPlugin.getNative();
+
+            const osmLayer = L.tileLayer(
+              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              { attribution: '© OpenStreetMap contributors', maxZoom: 19 }
+            );
+
+            const baseLayers = { 'OpenStreetMap': osmLayer };
+            const overlayLayers = {};
+
+            for (const [name, code] of Object.entries(WEATHER_CONFIG.layers)) {
+              const tileUrl = WEATHER_CONFIG.tileBaseUrl
+                .replace('{layer}', code)
+                .replace('{apiKey}', WEATHER_CONFIG.apiKey);
+
+              overlayLayers[name] = L.tileLayer(tileUrl, {
+                maxZoom: 19,
+                attribution: '© OpenWeatherMap',
+                opacity: 0.7
+              });
+            }
+
+            L.control.layers(baseLayers, overlayLayers, { position: 'topright', collapsed: false }).addTo(map);
+
+            osmLayer.addTo(map);
+            overlayLayers['Nuvens'].addTo(map); // Ativa nuvens por padrão
+          }
+        });
+      }
+    });
+  }
+</script>
