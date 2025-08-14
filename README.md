@@ -19,7 +19,7 @@ This is a weather layer that can be integrated into your **Virtual Radar Server 
 - In **Address**, delete all content and type only `"*"`.  
 - Click **Enable** and restart VRS.  
 
-## 4. Prerequisite
+## 4. Note
 - To make this script work, you must have the **Custom Content** plugin installed, available for free at:  
   [https://www.virtualradarserver.co.uk/Download.aspx](https://www.virtualradarserver.co.uk/Download.aspx)  
 
